@@ -55,16 +55,16 @@ public class GWatek implements GLEventListener {
         frame.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    xrot -= 1.0f;
+                    xrot -= 3.0f;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    xrot += 1.0f;
+                    xrot += 3.0f;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    yrot += 1.0f;
+                    yrot += 3.0f;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    yrot -= 1.0f;
+                    yrot -= 3.0f;
                 }
             }
 
@@ -116,19 +116,28 @@ public class GWatek implements GLEventListener {
         gl.glLoadIdentity();
     }
 
-    public void createShape(GL gl, float px, float py, float pz, float size) {
+    public void createShape(GL gl, float px, float py, float pz, float size, float odbicie) {
         float kat, x, y;
         gl.glBegin(GL.GL_TRIANGLE_FAN);
         gl.glVertex3f(px, py, pz); //œrodek
+        if(odbicie == -1) {
+              for (kat = 0.0f; kat > (-2.0f * Math.PI);
+                kat -= (Math.PI / 32.0f)) {
+            x = size * (float) Math.sin(kat);
+            y = size * (float) Math.cos(kat);
+            gl.glVertex3f(x, py, y); //kolejne punkty
+              }
+        }else{
         for (kat = 0.0f; kat < (2.0f * Math.PI);
                 kat += (Math.PI / 32.0f)) {
             x = size * (float) Math.sin(kat);
             y = size * (float) Math.cos(kat);
-            gl.glVertex3f(x + px, y + py, pz); //kolejne punkty
+            gl.glVertex3f(x, py, y); //kolejne punkty
+        }
         }
         gl.glEnd();
+    
     }
-
     public void createTriangle(GL gl, float x1, float y1, float x2, float y2, float x3, float y3, float z) {
         gl.glBegin(GL.GL_TRIANGLES);
         gl.glVertex3f(x1, y1, z);
@@ -170,34 +179,29 @@ public class GWatek implements GLEventListener {
         gl.glRotatef(xrot, 1.0f, 0.0f, 0.0f); //rotacja wokó³ osi X
         gl.glRotatef(yrot, 0.0f, 1.0f, 0.0f); //rotacja wokó³ osi Y
 
-        gl.glBegin(GL.GL_QUADS);
-        gl.glColor3f(1.0f, 0.0f, 1.0f);
-        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glVertex3f(1.0f, -1.0f, 1.0f);
-        gl.glEnd();
-        gl.glBegin(GL.GL_TRIANGLES);
-        gl.glColor3f(1.0f, 0.0f, 0.0f);
-        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-        gl.glVertex3f(1.0f, -1.0f, 1.0f);
-        gl.glVertex3f(0.0f, 1.0f, 0.0f);
+       float x,y,kat;
+gl.glBegin(GL.GL_QUAD_STRIP);
+//gl.glVertex3f(0.0f,0.0f,-6.0f); //?rodek
+gl.glColor3f(1.0f,1.0f,0.0f);
+for(kat = 0.0f; kat < (2.0f*Math.PI);
+kat+=(Math.PI/32.0f))
+{
+x = 1.0f*(float)Math.sin(kat);
+y = 1.0f*(float)Math.cos(kat);
+gl.glVertex3f(x, 2.0f, y);
+gl.glVertex3f(x, -2.0f, y);//kolejne punkty
+}
+gl.glEnd();
 
-        gl.glColor3f(0.0f, 1.0f, 0.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glVertex3f(0.0f, 1.0f, 0.0f);
 
-        gl.glColor3f(0.0f, 0.0f, 1.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-        gl.glVertex3f(0.0f, 1.0f, 0.0f);
+gl.glBegin(GL.GL_TRIANGLE_FAN);
+gl.glColor3f(1.0f,0.0f,0.0f);
+createShape(gl,0,2,0,1,1);
+gl.glColor3f(0.0f,1.0f,0.0f);
+createShape(gl,0,-2,0,1,-1);
 
-        gl.glColor3f(1.0f, 1.0f, 0.0f);
-        gl.glVertex3f(1.0f, -1.0f, 1.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glVertex3f(0.0f, 1.0f, 0.0f);
-        gl.glEnd();
+
+
 
         //Wykonanie wszystkich operacji znajduj¹cych siê w buforze
         gl.glFlush();
