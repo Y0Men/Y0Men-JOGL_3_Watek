@@ -26,6 +26,11 @@ public class GWatek implements GLEventListener {
     //statyczne pola okreœlaj¹ce rotacjê wokó³ osi X i Y
     private static float xrot = 0.0f, yrot = 0.0f;
 
+    public static float ambientLight[] = {0.3f, 0.3f, 0.3f, 1.0f};//swiat?o otaczajšce
+    public static float diffuseLight[] = {0.7f, 0.7f, 0.7f, 1.0f};//?wiat?o rozproszone
+    public static float specular[] = {1.0f, 1.0f, 1.0f, 1.0f}; //?wiat?o odbite
+    public static float lightPos[] = {0.0f, 150.0f, 150.0f, 1.0f};//pozycja ?wiat?a
+
     public static void main(String[] args) {
         Frame frame = new Frame("Simple JOGL Application");
         GLCanvas canvas = new GLCanvas();
@@ -66,6 +71,30 @@ public class GWatek implements GLEventListener {
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     yrot -= 3.0f;
                 }
+                if (e.getKeyChar() == 'q') {
+                    ambientLight = new float[]{ambientLight[0] - 0.1f, ambientLight[0] - 0.1f, ambientLight[0] - 0.1f, 1.0f};
+                }
+                if (e.getKeyChar() == 'w') {
+                    ambientLight = new float[]{ambientLight[0] + 0.1f, ambientLight[0] + 0.1f, ambientLight[0] + 0.1f, 1.0f};
+                }
+                if (e.getKeyChar() == 'a') {
+                    diffuseLight = new float[]{diffuseLight[0] - 0.1f, diffuseLight[0] - 0.1f, diffuseLight[0] - 0.1f, diffuseLight[0] - 0.1f};
+                }
+                if (e.getKeyChar() == 's') {
+                    diffuseLight = new float[]{diffuseLight[0] + 0.1f, diffuseLight[0] + 0.1f, diffuseLight[0] + 0.1f, diffuseLight[0] + 0.1f};
+                }
+                if (e.getKeyChar() == 'z') {
+                    specular = new float[]{specular[0] - 0.1f, specular[0] - 0.1f, specular[0] - 0.1f, specular[0] - 0.1f};
+                }
+                if (e.getKeyChar() == 'x') {
+                    specular = new float[]{specular[0] + 0.1f, specular[0] + 0.1f, specular[0] + 0.1f, specular[0] + 0.1f};
+                }
+                if (e.getKeyChar() == 'k') {
+                    lightPos = new float[]{lightPos[0] - 0.1f, lightPos[0] - 0.1f, lightPos[0] - 0.1f, lightPos[0] - 0.1f};
+                }
+                if (e.getKeyChar() == 'l') {
+                    lightPos = new float[]{lightPos[0] + 0.1f, lightPos[0] + 0.1f, lightPos[0] + 0.1f, lightPos[0] + 0.1f};
+                }
             }
 
             public void keyReleased(KeyEvent e) {
@@ -73,6 +102,7 @@ public class GWatek implements GLEventListener {
 
             public void keyTyped(KeyEvent e) {
             }
+
         });
 
         // Center frame
@@ -97,6 +127,28 @@ public class GWatek implements GLEventListener {
 
         //wy³¹czenie wewnêtrzych stron prymitywów
         gl.glEnable(GL.GL_CULL_FACE);
+
+        //(czwarty parametr okreœla odleg³oœæ Ÿród³a:
+        //0.0f-nieskoñczona; 1.0f-okreœlona przez pozosta³e parametry)
+        gl.glEnable(GL.GL_LIGHTING); //uaktywnienie oœwietlenia
+        //ustawienie parametrów Ÿród³a œwiat³a nr. 0
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, ambientLight, 0); //swiat³o otaczaj¹ce
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, diffuseLight, 0); //œwiat³o rozproszone
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, specular, 0); //œwiat³o odbite
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos, 0); //pozycja œwiat³a
+        gl.glEnable(GL.GL_LIGHT0); //uaktywnienie Ÿród³a œwiat³a nr. 0
+        gl.glEnable(GL.GL_COLOR_MATERIAL); //uaktywnienie œledzenia kolorów
+        //kolory bêd¹ ustalane za pomoc¹ glColor
+        gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
+        //Ustawienie jasnoœci i odblaskowoœci obiektów
+        float specref[] = {1.0f, 1.0f, 1.0f, 1.0f}; //parametry odblaskowoœci
+        gl.glMaterialfv(GL.GL_FRONT, GL.GL_SPECULAR, specref, 0);
+
+        gl.glMateriali(GL.GL_FRONT, GL.GL_SHININESS, 128);
+
+        gl.glEnable(GL.GL_DEPTH_TEST);
+        // Setup the drawing area and shading mode
+        gl.glShadeModel(GL.GL_SMOOTH); // try setting this to GL_FLAT and see what happens.
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -149,11 +201,11 @@ public class GWatek implements GLEventListener {
 
     public void createCone(GL gl, float px, float py, float pz, float size) {
         float kat, x, y;
-        
-   float xx, yy, katt;
+
+        float xx, yy, katt;
         gl.glBegin(GL.GL_TRIANGLE_FAN);
         gl.glColor3f(1.0f, 0.0f, 0.0f);
-        
+
         gl.glVertex3f(0.0f, 2.0f, 0.0f); //?rodek
         for (katt = 0.0f; katt < (2.0f * Math.PI);
                 katt += (Math.PI / 32.0f)) {
@@ -162,7 +214,7 @@ public class GWatek implements GLEventListener {
             gl.glVertex3f(xx, -2.0f, yy); //kolejne punkty
         }
         gl.glEnd();
-        
+
         gl.glBegin(GL.GL_TRIANGLE_FAN);
         gl.glVertex3f(px, py, pz); //?rodek
         for (kat = 0.0f; kat < (2.0f * Math.PI);
@@ -206,14 +258,56 @@ public class GWatek implements GLEventListener {
         gl.glTranslatef(0.0f, 0.0f, -6.0f); //przesuniêcie o 6 jednostek
         gl.glRotatef(xrot, 1.0f, 0.0f, 0.0f); //rotacja wokó³ osi X
         gl.glRotatef(yrot, 0.0f, 1.0f, 0.0f); //rotacja wokó³ osi Y
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, ambientLight, 0); //swiat³o otaczaj¹ce
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, diffuseLight, 0); //œwiat³o rozproszone
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, specular, 0); //œwiat³o odbite
 
-        createCone(gl,0,2,0,1);
-  
-        gl.glBegin(GL.GL_TRIANGLE_FAN);
-        gl.glColor3f(0.0f, 1.0f, 0.0f);
-        createShape(gl, 0, -2, 0, 1, -1);
-
+        gl.glBegin(GL.GL_QUADS);
+        gl.glBegin(GL.GL_QUADS);
+//?ciana przednia
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glNormal3f(0.0f, 0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+        gl.glVertex3f(1.0f, -1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, 1.0f);
+//sciana tylnia
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glNormal3f(0.0f, 0.0f, -1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+//?ciana lewa
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glNormal3f(-1.0f, 0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+//?ciana prawa
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glNormal3f(1.0f, 0.0f, 0.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glVertex3f(1.0f, 1.0f, 1.0f);
+        gl.glVertex3f(1.0f, -1.0f, 1.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+//?ciana dolna
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glNormal3f(0.0f, -1.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glVertex3f(1.0f, -1.0f, 1.0f);
+//?ciana górna
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glNormal3f(0.0f, 1.0f, 0.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, 1.0f);
         gl.glEnd();
+
         //Wykonanie wszystkich operacji znajduj¹cych siê w buforze
         gl.glFlush();
     }
