@@ -173,15 +173,16 @@ public class GWatek implements GLEventListener {
         gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
-        //glu.gluPerspective(75.0f, h, 1.0, 200.0);
-        float ilor=0;
+        glu.gluPerspective(75.0f, h, 1.0, 200.0);
+        gl.glViewport(0, 0, width/2, height/2);
+        /*float ilor=0;
         if (width <= height) {
             ilor = height / width;
             gl.glOrtho(-10.0f, 10.0f, -10.0f * ilor, 10.0f * ilor, -10.0f, 10.0f);
         } else {
             ilor = width / height;
             gl.glOrtho(-10.0f * ilor, 10.0f * ilor, -10.0f, 10.0f, -10.0f, 10.0f);
-        }
+        }*/
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
        
