@@ -31,7 +31,7 @@ public class GWatek implements GLEventListener {
     public static float specular[] = {1.0f, 1.0f, 1.0f, 1.0f}; //?wiat?o odbite
     public static float lightPos[] = {0.0f, 150.0f, 150.0f, 1.0f};//pozycja ?wiat?a
     public static float lightPos2[] = {0.0f, 150.0f, -150.0f, 1.0f};
-    public static float direction[]={0,0,0};
+    public static float direction[] = {0, 0, 0};
 
     public static void main(String[] args) {
         Frame frame = new Frame("Simple JOGL Application");
@@ -138,13 +138,13 @@ public class GWatek implements GLEventListener {
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, diffuseLight, 0); //œwiat³o rozproszone
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, specular, 0); //œwiat³o odbite
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos, 0); //pozycja œwiat³a
-        gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPOT_DIRECTION, direction ,0);
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPOT_DIRECTION, direction, 0);
         gl.glEnable(GL.GL_LIGHT0); //uaktywnienie Ÿród³a œwiat³a nr. 0
 
         gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, ambientLight, 0);
-        gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, diffuseLight, 0); 
-        gl.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, specular, 0); 
-        gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPos2, 0); 
+        gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, diffuseLight, 0);
+        gl.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, specular, 0);
+        gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPos2, 0);
         gl.glEnable(GL.GL_LIGHT1);
 
         gl.glEnable(GL.GL_COLOR_MATERIAL); //uaktywnienie œledzenia kolorów
@@ -173,9 +173,10 @@ public class GWatek implements GLEventListener {
         gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
-        glu.gluPerspective(45.0f, h, 1.0, 20.0);
+        glu.gluPerspective(45.0f, h, 1.0, 200.0);
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
+
     }
 
     public void createShape(GL gl, float px, float py, float pz, float size, float odbicie) {
@@ -283,6 +284,85 @@ public class GWatek implements GLEventListener {
         return norm;
     }
 
+    void walec(GL gl) {
+//wywo³ujemy automatyczne normalizowanie normalnych
+//bo operacja skalowania je zniekszta³ci
+        gl.glEnable(GL.GL_NORMALIZE);
+        float x, y, kat;
+        gl.glBegin(GL.GL_QUAD_STRIP);
+        for (kat = 0.0f; kat < (2.0f * Math.PI); kat += (Math.PI / 32.0f)) {
+            x = 0.5f * (float) Math.sin(kat);
+            y = 0.5f * (float) Math.cos(kat);
+            gl.glNormal3f((float) Math.sin(kat), (float) Math.cos(kat), 0.0f);
+            gl.glVertex3f(x, y, -1.0f);
+            gl.glVertex3f(x, y, 0.0f);
+        }
+        gl.glEnd();
+        gl.glNormal3f(0.0f, 0.0f, -1.0f);
+        x = y = kat = 0.0f;
+        gl.glBegin(GL.GL_TRIANGLE_FAN);
+        gl.glVertex3f(0.0f, 0.0f, -1.0f); //srodek kola
+        for (kat = 0.0f; kat < (2.0f * Math.PI); kat += (Math.PI / 32.0f)) {
+            x = 0.5f * (float) Math.sin(kat);
+            y = 0.5f * (float) Math.cos(kat);
+            gl.glVertex3f(x, y, -1.0f);
+        }
+        gl.glEnd();
+        gl.glNormal3f(0.0f, 0.0f, 1.0f);
+        x = y = kat = 0.0f;
+        gl.glBegin(GL.GL_TRIANGLE_FAN);
+        gl.glVertex3f(0.0f, 0.0f, 0.0f); //srodek kola
+        for (kat = 2.0f * (float) Math.PI; kat > 0.0f; kat -= (Math.PI / 32.0f)) {
+            x = 0.5f * (float) Math.sin(kat);
+            y = 0.5f * (float) Math.cos(kat);
+            gl.glVertex3f(x, y, 0.0f);
+        }
+        gl.glEnd();
+    }
+
+    void stozek(GL gl) {
+//wywo³ujemy automatyczne normalizowanie normalnych
+        gl.glEnable(GL.GL_NORMALIZE);
+        float x, y, kat;
+        gl.glBegin(GL.GL_TRIANGLE_FAN);
+        gl.glVertex3f(0.0f, 0.0f, -2.0f); //wierzcholek stozka
+        for (kat = 0.0f; kat < (2.0f * Math.PI); kat += (Math.PI / 32.0f)) {
+            x = (float) Math.sin(kat);
+            y = (float) Math.cos(kat);
+            gl.glNormal3f((float) Math.sin(kat), (float) Math.cos(kat), -2.0f);
+            gl.glVertex3f(x, y, 0.0f);
+        }
+        gl.glEnd();
+        gl.glBegin(GL.GL_TRIANGLE_FAN);
+        gl.glNormal3f(0.0f, 0.0f, 1.0f);
+        gl.glVertex3f(0.0f, 0.0f, 0.0f); //srodek kola
+        for (kat = 2.0f * (float) Math.PI; kat > 0.0f; kat -= (Math.PI / 32.0f)) {
+            x = (float) Math.sin(kat);
+            y = (float) Math.cos(kat);
+            gl.glVertex3f(x, y, 0.0f);
+        }
+        gl.glEnd();
+    }
+    
+    void choinka(GL gl) {
+        gl.glPushMatrix();
+        gl.glColor3f(0.139f, 0.061f, 0.019f);
+        gl.glScalef(0.4f, 0.4f, 0.4f); 
+        walec(gl);
+        gl.glTranslatef(0.0f, 0.0f, -0.5f);
+        gl.glScalef(2.0f, 2.0f, 1.5f); 
+        gl.glColor3f(0f, 0.102f, 0.051f);
+        stozek(gl);
+        gl.glTranslatef(0.0f, 0.0f, -1.1f);
+        gl.glScalef(0.7f, 0.7f, 0.7f); 
+        stozek(gl);
+        gl.glTranslatef(0.0f, 0.0f, -1.1f);
+        gl.glScalef(0.7f, 0.7f, 0.7f); 
+        stozek(gl); 
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+
     public void display(GLAutoDrawable drawable) {
 //Tworzenie obiektu
         GL gl = drawable.getGL();
@@ -290,7 +370,7 @@ public class GWatek implements GLEventListener {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         //Resetowanie macierzy transformacji
         gl.glLoadIdentity();
-
+        
         gl.glTranslatef(0.0f, 0.0f, -6.0f); //przesuniêcie o 6 jednostek
         gl.glRotatef(xrot, 1.0f, 0.0f, 0.0f); //rotacja wokó³ osi X
         gl.glRotatef(yrot, 0.0f, 1.0f, 0.0f); //rotacja wokó³ osi Y
@@ -298,7 +378,7 @@ public class GWatek implements GLEventListener {
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, diffuseLight, 0); //œwiat³o rozproszone
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, specular, 0); //œwiat³o odbite
 
-        float x, y, kat;
+        /*float x, y, kat;
         gl.glBegin(GL.GL_QUAD_STRIP);
 //gl.glVertex3f(0.0f,0.0f,-6.0f); //?rodek
         gl.glColor3f(1.0f, 1.0f, 0.0f);
@@ -368,8 +448,16 @@ public class GWatek implements GLEventListener {
         gl.glVertex3fv(scianka4, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
         gl.glVertex3fv(scianka4, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
         gl.glVertex3fv(scianka4, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
-
-        gl.glEnd();
+        
+        
+*/      
+        for(float i=0; i<10;i++) {
+            choinka(gl);
+             gl.glTranslatef(2.0f, 0.0f, 0.0f);
+            choinka(gl);
+             gl.glTranslatef(-2.0f, 2.0f, 0.0f);
+        }
+   
 
         //Wykonanie wszystkich operacji znajduj¹cych siê w buforze
         gl.glFlush();
