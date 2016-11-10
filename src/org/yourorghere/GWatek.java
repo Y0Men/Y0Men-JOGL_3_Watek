@@ -173,9 +173,18 @@ public class GWatek implements GLEventListener {
         gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
-        glu.gluPerspective(45.0f, h, 1.0, 200.0);
+        //glu.gluPerspective(75.0f, h, 1.0, 200.0);
+        float ilor=0;
+        if (width <= height) {
+            ilor = height / width;
+            gl.glOrtho(-10.0f, 10.0f, -10.0f * ilor, 10.0f * ilor, -10.0f, 10.0f);
+        } else {
+            ilor = width / height;
+            gl.glOrtho(-10.0f * ilor, 10.0f * ilor, -10.0f, 10.0f, -10.0f, 10.0f);
+        }
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
+       
 
     }
 
@@ -343,22 +352,22 @@ public class GWatek implements GLEventListener {
         }
         gl.glEnd();
     }
-    
+
     void choinka(GL gl) {
         gl.glPushMatrix();
         gl.glColor3f(0.139f, 0.061f, 0.019f);
-        gl.glScalef(0.4f, 0.4f, 0.4f); 
+        gl.glScalef(0.4f, 0.4f, 0.4f);
         walec(gl);
         gl.glTranslatef(0.0f, 0.0f, -0.5f);
-        gl.glScalef(2.0f, 2.0f, 1.5f); 
+        gl.glScalef(2.0f, 2.0f, 1.5f);
         gl.glColor3f(0f, 0.102f, 0.051f);
         stozek(gl);
         gl.glTranslatef(0.0f, 0.0f, -1.1f);
-        gl.glScalef(0.7f, 0.7f, 0.7f); 
+        gl.glScalef(0.7f, 0.7f, 0.7f);
         stozek(gl);
         gl.glTranslatef(0.0f, 0.0f, -1.1f);
-        gl.glScalef(0.7f, 0.7f, 0.7f); 
-        stozek(gl); 
+        gl.glScalef(0.7f, 0.7f, 0.7f);
+        stozek(gl);
         gl.glEnd();
         gl.glPopMatrix();
     }
@@ -370,7 +379,7 @@ public class GWatek implements GLEventListener {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         //Resetowanie macierzy transformacji
         gl.glLoadIdentity();
-        
+
         gl.glTranslatef(0.0f, 0.0f, -6.0f); //przesuniêcie o 6 jednostek
         gl.glRotatef(xrot, 1.0f, 0.0f, 0.0f); //rotacja wokó³ osi X
         gl.glRotatef(yrot, 0.0f, 1.0f, 0.0f); //rotacja wokó³ osi Y
@@ -379,85 +388,84 @@ public class GWatek implements GLEventListener {
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, specular, 0); //œwiat³o odbite
 
         /*float x, y, kat;
-        gl.glBegin(GL.GL_QUAD_STRIP);
-//gl.glVertex3f(0.0f,0.0f,-6.0f); //?rodek
-        gl.glColor3f(1.0f, 1.0f, 0.0f);
-        for (kat = 0.0f; kat < (2.0f * Math.PI);
-                kat += (Math.PI / 32.0f)) {
-            x = 1.0f * (float) Math.sin(kat);
-            y = 1.0f * (float) Math.cos(kat);
-            gl.glNormal3f(x, 0.0f, 0.0f);
-            gl.glVertex3f(x, 2.0f, y);
-            gl.glVertex3f(x, -2.0f, y);//kolejne punkty
-        }
-        gl.glEnd();
+         gl.glBegin(GL.GL_QUAD_STRIP);
+         //gl.glVertex3f(0.0f,0.0f,-6.0f); //?rodek
+         gl.glColor3f(1.0f, 1.0f, 0.0f);
+         for (kat = 0.0f; kat < (2.0f * Math.PI);
+         kat += (Math.PI / 32.0f)) {
+         x = 1.0f * (float) Math.sin(kat);
+         y = 1.0f * (float) Math.cos(kat);
+         gl.glNormal3f(x, 0.0f, 0.0f);
+         gl.glVertex3f(x, 2.0f, y);
+         gl.glVertex3f(x, -2.0f, y);//kolejne punkty
+         }
+         gl.glEnd();
 
-        gl.glBegin(GL.GL_TRIANGLE_FAN);
-        gl.glColor3f(1.0f, 0.0f, 0.0f);
-        createShape(gl, 0, 2, 0, 1, 1);
-        gl.glColor3f(0.0f, 1.0f, 0.0f);
-        createShape(gl, 0, -2, 0, 1, -1);
+         gl.glBegin(GL.GL_TRIANGLE_FAN);
+         gl.glColor3f(1.0f, 0.0f, 0.0f);
+         createShape(gl, 0, 2, 0, 1, 1);
+         gl.glColor3f(0.0f, 1.0f, 0.0f);
+         createShape(gl, 0, -2, 0, 1, -1);
 
-        gl.glBegin(GL.GL_QUADS);
-        gl.glColor3f(1.0f, 0.0f, 1.0f);
-        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glVertex3f(1.0f, -1.0f, 1.0f);
-        gl.glEnd();
+         gl.glBegin(GL.GL_QUADS);
+         gl.glColor3f(1.0f, 0.0f, 1.0f);
+         gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+         gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+         gl.glVertex3f(1.0f, -1.0f, -1.0f);
+         gl.glVertex3f(1.0f, -1.0f, 1.0f);
+         gl.glEnd();
 
-        gl.glTranslatef(0.0f, 0.0f, -3.0f); //przesuniêcie o 6 jednostek
-        gl.glBegin(GL.GL_TRIANGLES);
+         gl.glTranslatef(0.0f, 0.0f, -3.0f); //przesuniêcie o 6 jednostek
+         gl.glBegin(GL.GL_TRIANGLES);
 
-        float[] scianka1 = {-1.0f, -1.0f, 1.0f, //wpó?rz?dne pierwszego punktu
-            1.0f, -1.0f, 1.0f, //wspó?rz?dne drugiego punktu
-            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
-        float[] normalna1 = WyznaczNormalna(scianka1, 0, 3, 6);
-        gl.glColor3f(1.0f, 0.0f, 1.0f);
-        gl.glNormal3fv(normalna1, 0);
-        gl.glVertex3fv(scianka1, 0);
-        gl.glVertex3fv(scianka1, 3);
-        gl.glVertex3fv(scianka1, 6);
+         float[] scianka1 = {-1.0f, -1.0f, 1.0f, //wpó?rz?dne pierwszego punktu
+         1.0f, -1.0f, 1.0f, //wspó?rz?dne drugiego punktu
+         0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
+         float[] normalna1 = WyznaczNormalna(scianka1, 0, 3, 6);
+         gl.glColor3f(1.0f, 0.0f, 1.0f);
+         gl.glNormal3fv(normalna1, 0);
+         gl.glVertex3fv(scianka1, 0);
+         gl.glVertex3fv(scianka1, 3);
+         gl.glVertex3fv(scianka1, 6);
 
-        float[] scianka2 = {1.0f, -1.0f, -1.0f, //wpó?rz?dne pierwszego punktu
-            -1.0f, -1.0f, -1.0f, //wspó?rz?dne drugiego punktu
-            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
-        float[] normalna2 = WyznaczNormalna(scianka2, 0, 3, 6);
+         float[] scianka2 = {1.0f, -1.0f, -1.0f, //wpó?rz?dne pierwszego punktu
+         -1.0f, -1.0f, -1.0f, //wspó?rz?dne drugiego punktu
+         0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
+         float[] normalna2 = WyznaczNormalna(scianka2, 0, 3, 6);
 
-        gl.glNormal3fv(normalna2, 0);
-        gl.glVertex3fv(scianka2, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
-        gl.glVertex3fv(scianka2, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
-        gl.glVertex3fv(scianka2, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
+         gl.glNormal3fv(normalna2, 0);
+         gl.glVertex3fv(scianka2, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
+         gl.glVertex3fv(scianka2, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
+         gl.glVertex3fv(scianka2, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
 
-        float[] scianka3 = {-1.0f, -1.0f, -1.0f, //wpó?rz?dne pierwszego punktu
-            -1.0f, -1.0f, 1.0f, //wspó?rz?dne drugiego punktu
-            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
-        float[] normalna3 = WyznaczNormalna(scianka3, 0, 3, 6);
+         float[] scianka3 = {-1.0f, -1.0f, -1.0f, //wpó?rz?dne pierwszego punktu
+         -1.0f, -1.0f, 1.0f, //wspó?rz?dne drugiego punktu
+         0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
+         float[] normalna3 = WyznaczNormalna(scianka3, 0, 3, 6);
 
-        gl.glNormal3fv(normalna3, 0);
-        gl.glVertex3fv(scianka3, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
-        gl.glVertex3fv(scianka3, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
-        gl.glVertex3fv(scianka3, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
+         gl.glNormal3fv(normalna3, 0);
+         gl.glVertex3fv(scianka3, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
+         gl.glVertex3fv(scianka3, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
+         gl.glVertex3fv(scianka3, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
 
-        float[] scianka4 = {1.0f, -1.0f, 1.0f,
-            1.0f, -1.0f, -1.0f, //wspó?rz?dne drugiego punktu
-            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
-        float[] normalna4 = WyznaczNormalna(scianka4, 0, 3, 6);
+         float[] scianka4 = {1.0f, -1.0f, 1.0f,
+         1.0f, -1.0f, -1.0f, //wspó?rz?dne drugiego punktu
+         0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
+         float[] normalna4 = WyznaczNormalna(scianka4, 0, 3, 6);
 
-        gl.glNormal3fv(normalna4, 0);
-        gl.glVertex3fv(scianka4, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
-        gl.glVertex3fv(scianka4, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
-        gl.glVertex3fv(scianka4, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
+         gl.glNormal3fv(normalna4, 0);
+         gl.glVertex3fv(scianka4, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
+         gl.glVertex3fv(scianka4, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
+         gl.glVertex3fv(scianka4, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
         
         
-*/      
-        for(float i=0; i<10;i++) {
+         */
+        for (float i = 0; i <= 10; i++) {
             choinka(gl);
-             gl.glTranslatef(2.0f, 0.0f, 0.0f);
+            gl.glTranslatef(2.0f, 0.0f, 0.0f);
             choinka(gl);
-             gl.glTranslatef(-2.0f, 2.0f, 0.0f);
+            gl.glTranslatef(-2.0f, 2.0f, 0.0f);
         }
-   
 
         //Wykonanie wszystkich operacji znajduj¹cych siê w buforze
         gl.glFlush();
