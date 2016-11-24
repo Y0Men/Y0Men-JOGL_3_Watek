@@ -25,6 +25,7 @@ public class GWatek implements GLEventListener {
 
     //statyczne pola okreœlaj¹ce rotacjê wokó³ osi X i Y
     private static float xrot = 0.0f, yrot = 0.0f;
+    static Koparka koparka;
 
     public static float ambientLight[] = {0.3f, 0.3f, 0.3f, 1.0f};//swiat?o otaczajšce
     public static float diffuseLight[] = {0.7f, 0.7f, 0.7f, 1.0f};//?wiat?o rozproszone
@@ -97,7 +98,53 @@ public class GWatek implements GLEventListener {
                 if (e.getKeyChar() == 'l') {
                     lightPos = new float[]{lightPos[0] + 0.1f, lightPos[0] + 0.1f, lightPos[0] + 0.1f, lightPos[0] + 0.1f};
                 }
+                //ramie1 
+                if (e.getKeyChar() == 'b') { //53 gora -45 dol
+                    if (koparka.kat1 < 53.0f && koparka.kat1 >= -45.0f) {
+                    koparka.kat1 += 0.5f;
+                }
+                }
+
+                if (e.getKeyChar() == 'n') {
+                     if (koparka.kat1 <= 53.0f && koparka.kat1 > -45.0f) {
+                    koparka.kat1 -= 0.5f;
+                     }
+                }
+                //ramie2  45 gora 103
+                if (e.getKeyChar() == 'g') {
+                     if (koparka.kat2 < 45.0f && koparka.kat2 >= -103.0f) {
+                    koparka.kat2 += 0.5f;
+                     }
+                }   
+                
+                if (e.getKeyChar() == 'h') {
+                    if (koparka.kat2 <= 45.0f && koparka.kat2 > -103.0f) {
+                    koparka.kat2 -= 0.5f;
+                    }
+                }
+                //lyzka 25 -120
+                if (e.getKeyChar() == 't') {
+                     if (koparka.kat3 < 25.0f && koparka.kat3 >= -120.0f) {
+                    koparka.kat3 += 0.5f;
+                     }
+                }
+                if (e.getKeyChar() == 'y') {
+                      if (koparka.kat3 <= 25.0f && koparka.kat3 > -120.0f) {
+                    koparka.kat3 -= 0.5f;
+                      }
+                }
+                if (e.getKeyChar() == 'u') {
+                    if (koparka.boki < 45.0f && koparka.boki >= -45.0f) {
+                        koparka.boki += 0.5f;
+                    }
+                }
+                if (e.getKeyChar() == 'i') {
+                    if (koparka.boki <= 45.0f && koparka.boki > -45.0f) {
+                        koparka.boki -= 0.5f;
+                    }
+                }
             }
+            
 
             public void keyReleased(KeyEvent e) {
             }
@@ -159,6 +206,8 @@ public class GWatek implements GLEventListener {
         gl.glEnable(GL.GL_DEPTH_TEST);
         // Setup the drawing area and shading mode
         gl.glShadeModel(GL.GL_SMOOTH); // try setting this to GL_FLAT and see what happens.
+        
+        koparka = new Koparka();
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -173,8 +222,8 @@ public class GWatek implements GLEventListener {
         gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
-        glu.gluPerspective(75.0f, h, 1.0, 200.0);
-        gl.glViewport(0, 0, width/2, height/2);
+        glu.gluPerspective(100.0f, h, 1.0, 200.0);
+        //gl.glViewport(0, 0, width/2, height/2);
         /*float ilor=0;
         if (width <= height) {
             ilor = height / width;
@@ -461,12 +510,8 @@ public class GWatek implements GLEventListener {
         
         
          */
-        for (float i = 0; i <= 10; i++) {
-            choinka(gl);
-            gl.glTranslatef(2.0f, 0.0f, 0.0f);
-            choinka(gl);
-            gl.glTranslatef(-2.0f, 2.0f, 0.0f);
-        }
+        koparka.Rysuj(gl);
+        koparka.KopanieAutomat(0.03f);
 
         //Wykonanie wszystkich operacji znajduj¹cych siê w buforze
         gl.glFlush();
