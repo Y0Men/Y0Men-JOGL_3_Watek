@@ -536,14 +536,15 @@ public class GWatek implements GLEventListener {
         
          */
         //Wykonanie wszystkich operacji znajduj¹cych siê w buforze
-         gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+        
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
         gl.glBegin(GL.GL_QUADS);
 //?ciana przednia
         gl.glNormal3f(0.0f, 0.0f, 1.0f);
-        gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-        gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex3f(1.0f, -1.0f, 1.0f);
+        gl.glTexCoord2f(2.0f, 2.0f); gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+        gl.glTexCoord2f(0.0f, 2.0f); gl.glVertex3f(1.0f, -1.0f, 1.0f);
         gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(1.0f, 1.0f, 1.0f);
-        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(-1.0f, 1.0f, 1.0f);
+        gl.glTexCoord2f(2.0f, 0.0f); gl.glVertex3f(-1.0f, 1.0f, 1.0f);
         gl.glEnd();
 //sciana tylnia
         gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
