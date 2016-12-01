@@ -461,6 +461,7 @@ public class GWatek implements GLEventListener {
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, ambientLight, 0); //swiat³o otaczaj¹ce
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, diffuseLight, 0); //œwiat³o rozproszone
         gl.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, specular, 0); //œwiat³o odbite
+        gl.glScalef(2,2,2);
 
         /*float x, y, kat;
          gl.glBegin(GL.GL_QUAD_STRIP);
@@ -536,7 +537,7 @@ public class GWatek implements GLEventListener {
         
          */
         //Wykonanie wszystkich operacji znajduj¹cych siê w buforze
-        
+        /*
         gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
         gl.glBegin(GL.GL_QUADS);
 //?ciana przednia
@@ -591,7 +592,62 @@ public class GWatek implements GLEventListener {
         gl.glTexCoord2f(0.0f, 1.0f);gl.glVertex3f(-1.0f, 1.0f, 1.0f);
          gl.glTexCoord2f(1.0f, 1.0f);gl.glVertex3f(1.0f, 1.0f, 1.0f);
         gl.glEnd();
+*/
+        gl.glBegin(GL.GL_QUADS);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t1.getTextureObject());
+        gl.glTexCoord2f(0,1); gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+        gl.glTexCoord2f(0,0); gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1,0); gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1,1);gl.glVertex3f(1.0f, -1.0f, 1.0f);
+        gl.glEnd();
+        gl.glBegin(GL.GL_TRIANGLES);
+         gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+        float[] scianka1 = {-1.0f, -1.0f, 1.0f, //wpó?rz?dne pierwszego punktu
+            1.0f, -1.0f, 1.0f, //wspó?rz?dne drugiego punktu
+            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
+        float[] normalna1 = WyznaczNormalna(scianka1, 0, 3, 6);
+        gl.glNormal3fv(normalna1, 0);
+        gl.glTexCoord2f(0,1); gl.glVertex3fv(scianka1, 0);
+        gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka1, 3);
+        gl.glTexCoord2f(0,0); gl.glVertex3fv(scianka1, 6);
+        gl.glEnd();
+        gl.glBegin(GL.GL_TRIANGLES);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+        float[] scianka2 = {1.0f, -1.0f, -1.0f, //wpó?rz?dne pierwszego punktu
+            -1.0f, -1.0f, -1.0f, //wspó?rz?dne drugiego punktu
+            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
+        float[] normalna2 = WyznaczNormalna(scianka2, 0, 3, 6);
 
+        gl.glNormal3fv(normalna2, 0);
+       gl.glTexCoord2f(0,1); gl.glVertex3fv(scianka2, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
+       gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka2, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
+       gl.glTexCoord2f(0,0); gl.glVertex3fv(scianka2, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
+        gl.glEnd();
+        gl.glBegin(GL.GL_TRIANGLES);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+           float[] scianka3 = {-1.0f, -1.0f, -1.0f, //wpó?rz?dne pierwszego punktu
+            -1.0f, -1.0f, 1.0f, //wspó?rz?dne drugiego punktu
+            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
+        float[] normalna3 = WyznaczNormalna(scianka3, 0, 3, 6);
+            
+        gl.glNormal3fv(normalna3, 0);
+       gl.glTexCoord2f(0,1); gl.glVertex3fv(scianka3, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
+        gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka3, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
+       gl.glTexCoord2f(0,0); gl.glVertex3fv(scianka3, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
+        gl.glEnd();
+        gl.glBegin(GL.GL_TRIANGLES);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+        float[] scianka4 = {1.0f, -1.0f, 1.0f, 
+            1.0f, -1.0f, -1.0f, //wspó?rz?dne drugiego punktu
+            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
+        float[] normalna4 = WyznaczNormalna(scianka4, 0, 3, 6);
+       gl.glTexCoord2f(0,1); gl.glNormal3fv(normalna4, 0);
+       gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka4, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
+       gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka4, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
+        gl.glVertex3fv(scianka4, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
+
+  
+        gl.glEnd();
         
         gl.glFlush();
     }
