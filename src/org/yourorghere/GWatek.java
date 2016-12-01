@@ -14,6 +14,13 @@ import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
+import com.sun.opengl.util.texture.Texture;
+import com.sun.opengl.util.texture.TextureIO;
+import java.io.File;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
+
 /**
  * GWatek.java <BR>
  * author: Brian Paul (converted to Java by Ron Cemer and Sven Goethel)
@@ -26,6 +33,8 @@ public class GWatek implements GLEventListener {
     //statyczne pola okreœlaj¹ce rotacjê wokó³ osi X i Y
     private static float xrot = 0.0f, yrot = 0.0f;
     static Koparka koparka;
+    static BufferedImage image1 = null, image2 = null;
+    static Texture t1 = null, t2 = null;
 
     public static float ambientLight[] = {0.3f, 0.3f, 0.3f, 1.0f};//swiat?o otaczajšce
     public static float diffuseLight[] = {0.7f, 0.7f, 0.7f, 1.0f};//?wiat?o rozproszone
@@ -101,37 +110,37 @@ public class GWatek implements GLEventListener {
                 //ramie1 
                 if (e.getKeyChar() == 'b') { //53 gora -45 dol
                     if (koparka.kat1 < 53.0f && koparka.kat1 >= -45.0f) {
-                    koparka.kat1 += 0.5f;
-                }
+                        koparka.kat1 += 0.5f;
+                    }
                 }
 
                 if (e.getKeyChar() == 'n') {
-                     if (koparka.kat1 <= 53.0f && koparka.kat1 > -45.0f) {
-                    koparka.kat1 -= 0.5f;
-                     }
+                    if (koparka.kat1 <= 53.0f && koparka.kat1 > -45.0f) {
+                        koparka.kat1 -= 0.5f;
+                    }
                 }
                 //ramie2  45 gora 103
                 if (e.getKeyChar() == 'g') {
-                     if (koparka.kat2 < 45.0f && koparka.kat2 >= -103.0f) {
-                    koparka.kat2 += 0.5f;
-                     }
-                }   
-                
+                    if (koparka.kat2 < 45.0f && koparka.kat2 >= -103.0f) {
+                        koparka.kat2 += 0.5f;
+                    }
+                }
+
                 if (e.getKeyChar() == 'h') {
                     if (koparka.kat2 <= 45.0f && koparka.kat2 > -103.0f) {
-                    koparka.kat2 -= 0.5f;
+                        koparka.kat2 -= 0.5f;
                     }
                 }
                 //lyzka 25 -120
                 if (e.getKeyChar() == 't') {
-                     if (koparka.kat3 < 25.0f && koparka.kat3 >= -120.0f) {
-                    koparka.kat3 += 0.5f;
-                     }
+                    if (koparka.kat3 < 25.0f && koparka.kat3 >= -120.0f) {
+                        koparka.kat3 += 0.5f;
+                    }
                 }
                 if (e.getKeyChar() == 'y') {
-                      if (koparka.kat3 <= 25.0f && koparka.kat3 > -120.0f) {
-                    koparka.kat3 -= 0.5f;
-                      }
+                    if (koparka.kat3 <= 25.0f && koparka.kat3 > -120.0f) {
+                        koparka.kat3 -= 0.5f;
+                    }
                 }
                 if (e.getKeyChar() == 'u') {
                     if (koparka.boki < 45.0f && koparka.boki >= -45.0f) {
@@ -144,7 +153,6 @@ public class GWatek implements GLEventListener {
                     }
                 }
             }
-            
 
             public void keyReleased(KeyEvent e) {
             }
@@ -206,8 +214,26 @@ public class GWatek implements GLEventListener {
         gl.glEnable(GL.GL_DEPTH_TEST);
         // Setup the drawing area and shading mode
         gl.glShadeModel(GL.GL_SMOOTH); // try setting this to GL_FLAT and see what happens.
-        
-        koparka = new Koparka();
+
+        try {
+            image1 = ImageIO.read(getClass().getResourceAsStream("/pokemon.jpg"));
+            image2 = ImageIO.read(getClass().getResourceAsStream("/android.jpg"));
+        } catch (Exception exc) {
+            JOptionPane.showMessageDialog(null, exc.toString());
+            return;
+        }
+
+        t1 = TextureIO.newTexture(image1, false);
+        t2 = TextureIO.newTexture(image2, false);
+
+        gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_BLEND | GL.GL_MODULATE);
+        gl.glEnable(GL.GL_TEXTURE_2D);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t1.getTextureObject());
+
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -225,16 +251,15 @@ public class GWatek implements GLEventListener {
         glu.gluPerspective(100.0f, h, 1.0, 200.0);
         //gl.glViewport(0, 0, width/2, height/2);
         /*float ilor=0;
-        if (width <= height) {
-            ilor = height / width;
-            gl.glOrtho(-10.0f, 10.0f, -10.0f * ilor, 10.0f * ilor, -10.0f, 10.0f);
-        } else {
-            ilor = width / height;
-            gl.glOrtho(-10.0f * ilor, 10.0f * ilor, -10.0f, 10.0f, -10.0f, 10.0f);
-        }*/
+         if (width <= height) {
+         ilor = height / width;
+         gl.glOrtho(-10.0f, 10.0f, -10.0f * ilor, 10.0f * ilor, -10.0f, 10.0f);
+         } else {
+         ilor = width / height;
+         gl.glOrtho(-10.0f * ilor, 10.0f * ilor, -10.0f, 10.0f, -10.0f, 10.0f);
+         }*/
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
-       
 
     }
 
@@ -510,10 +535,63 @@ public class GWatek implements GLEventListener {
         
         
          */
-        koparka.Rysuj(gl);
-        koparka.KopanieAutomat(0.03f);
-
         //Wykonanie wszystkich operacji znajduj¹cych siê w buforze
+         gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+        gl.glBegin(GL.GL_QUADS);
+//?ciana przednia
+        gl.glNormal3f(0.0f, 0.0f, 1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex3f(1.0f, -1.0f, 1.0f);
+        gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(1.0f, 1.0f, 1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(-1.0f, 1.0f, 1.0f);
+        gl.glEnd();
+//sciana tylnia
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+        gl.glBegin(GL.GL_QUADS);
+        gl.glNormal3f(0.0f, 0.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+         gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex3f(1.0f, -1.0f, -1.0f);
+         gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glEnd();
+//?ciana lewa
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+         gl.glBegin(GL.GL_QUADS);
+         gl.glNormal3f(-1.0f, 0.0f, 0.0f);
+        gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex3f(-1.0f, -1.0f, -1.0f); //gora lewa
+        gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(-1.0f, 1.0f, 1.0f);
+        gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+//?ciana prawa
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
+         gl.glBegin(GL.GL_QUADS);
+        gl.glNormal3f(1.0f, 0.0f, 0.0f);
+        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(1.0f, 1.0f, 1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex3f(1.0f, -1.0f, 1.0f);
+         gl.glTexCoord2f(1.0f, 1.0f);gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glEnd();
+//?ciana dolna
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t1.getTextureObject());
+         gl.glBegin(GL.GL_QUADS);
+         gl.glNormal3f(0.0f, -1.0f, 0.0f);
+         gl.glTexCoord2f(0.0f, 1.0f);gl.glVertex3f(-1.0f, -1.0f, 1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+         gl.glTexCoord2f(1.0f, 0.0f);gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(1.0f, -1.0f, 1.0f);
+        gl.glEnd();
+//?ciana górna
+        gl.glBindTexture(GL.GL_TEXTURE_2D, t1.getTextureObject());
+         gl.glBegin(GL.GL_QUADS);
+        gl.glNormal3f(0.0f, 1.0f, 0.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);gl.glVertex3f(1.0f, 1.0f, -1.0f);
+         gl.glTexCoord2f(0.0f, 0.0f);gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);gl.glVertex3f(-1.0f, 1.0f, 1.0f);
+         gl.glTexCoord2f(1.0f, 1.0f);gl.glVertex3f(1.0f, 1.0f, 1.0f);
+        gl.glEnd();
+
+        
         gl.glFlush();
     }
 
