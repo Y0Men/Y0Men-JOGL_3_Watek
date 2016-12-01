@@ -593,61 +593,33 @@ public class GWatek implements GLEventListener {
          gl.glTexCoord2f(1.0f, 1.0f);gl.glVertex3f(1.0f, 1.0f, 1.0f);
         gl.glEnd();
 */
-        gl.glBegin(GL.GL_QUADS);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, t1.getTextureObject());
-        gl.glTexCoord2f(0,1); gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-        gl.glTexCoord2f(0,0); gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1,0); gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1,1);gl.glVertex3f(1.0f, -1.0f, 1.0f);
-        gl.glEnd();
-        gl.glBegin(GL.GL_TRIANGLES);
-         gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
-        float[] scianka1 = {-1.0f, -1.0f, 1.0f, //wpó?rz?dne pierwszego punktu
-            1.0f, -1.0f, 1.0f, //wspó?rz?dne drugiego punktu
-            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
-        float[] normalna1 = WyznaczNormalna(scianka1, 0, 3, 6);
-        gl.glNormal3fv(normalna1, 0);
-        gl.glTexCoord2f(0,1); gl.glVertex3fv(scianka1, 0);
-        gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka1, 3);
-        gl.glTexCoord2f(0,0); gl.glVertex3fv(scianka1, 6);
-        gl.glEnd();
-        gl.glBegin(GL.GL_TRIANGLES);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
-        float[] scianka2 = {1.0f, -1.0f, -1.0f, //wpó?rz?dne pierwszego punktu
-            -1.0f, -1.0f, -1.0f, //wspó?rz?dne drugiego punktu
-            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
-        float[] normalna2 = WyznaczNormalna(scianka2, 0, 3, 6);
 
-        gl.glNormal3fv(normalna2, 0);
-       gl.glTexCoord2f(0,1); gl.glVertex3fv(scianka2, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
-       gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka2, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
-       gl.glTexCoord2f(0,0); gl.glVertex3fv(scianka2, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
-        gl.glEnd();
-        gl.glBegin(GL.GL_TRIANGLES);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
-           float[] scianka3 = {-1.0f, -1.0f, -1.0f, //wpó?rz?dne pierwszego punktu
-            -1.0f, -1.0f, 1.0f, //wspó?rz?dne drugiego punktu
-            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
-        float[] normalna3 = WyznaczNormalna(scianka3, 0, 3, 6);
-            
-        gl.glNormal3fv(normalna3, 0);
-       gl.glTexCoord2f(0,1); gl.glVertex3fv(scianka3, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
-        gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka3, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
-       gl.glTexCoord2f(0,0); gl.glVertex3fv(scianka3, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
-        gl.glEnd();
-        gl.glBegin(GL.GL_TRIANGLES);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, t2.getTextureObject());
-        float[] scianka4 = {1.0f, -1.0f, 1.0f, 
-            1.0f, -1.0f, -1.0f, //wspó?rz?dne drugiego punktu
-            0.0f, 1.0f, 0.0f}; //wspó?rz?dne trzeciego punktu
-        float[] normalna4 = WyznaczNormalna(scianka4, 0, 3, 6);
-       gl.glTexCoord2f(0,1); gl.glNormal3fv(normalna4, 0);
-       gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka4, 0); //wspó?rz?dne 1-go punktu zaczynaj? si? od indeksu 0
-       gl.glTexCoord2f(1,1); gl.glVertex3fv(scianka4, 3); //wspó?rz?dne 2-go punktu zaczynaj? si? od indeksu 3
-        gl.glVertex3fv(scianka4, 6); //wspó?rz?dne 3-go punktu zaczynaj? si? od indeksu 6
+           float x,y,kat;
+           
+gl.glBegin(GL.GL_QUAD_STRIP);
+//gl.glVertex3f(0.0f,0.0f,-6.0f); //?rodek
+gl.glColor3f(1.0f,1.0f,0.0f);
+for(kat = 0.0f; kat < (2.0f*Math.PI);
+kat+=(Math.PI/32.0f))
+{
+x = 1.0f*(float)Math.sin(kat);
+y = 1.0f*(float)Math.cos(kat);
+gl.glNormal3f(x, 0.0f, 0.0f);
+gl.glTexCoord2f(kat/7, 0.0f); gl.glVertex3f(x, 2.0f, y);
+gl.glTexCoord2f(kat/7, 1.0f); gl.glVertex3f(x, -2.0f, y);//kolejne punkty
+}
+gl.glEnd();
 
+
+gl.glBegin(GL.GL_TRIANGLE_FAN);
+gl.glColor3f(1.0f,0.0f,0.0f);
+createShape(gl,0,2,0,1,1);
+gl.glEnd();
+gl.glBegin(GL.GL_TRIANGLE_FAN);
+gl.glColor3f(0.0f,1.0f,0.0f);
+createShape(gl,0,-2,0,1,-1);
+gl.glEnd();
   
-        gl.glEnd();
         
         gl.glFlush();
     }
